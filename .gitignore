@@ -39,6 +39,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+dist/
 
 # TypeScript v1 declaration files
 typings/
@@ -76,5 +77,7 @@ typings/
 # Serverless directories
 .serverless
 
+# yarn.lock file
+yarn.lock
 
 # End of https://www.gitignore.io/api/node

@@ -67,64 +67,45 @@ const getText = document.getElementById('get-text');
 let testText = {
   value: ''
 };
-// const createOrLoadModelButton = document.getElementById('create-or-load-model');
-// const deleteModelButton = document.getElementById('delete-model');
-// const trainModelButton = document.getElementById('train-model');
-// const generateTextButton = document.getElementById('generate-text');
-// const generateSeedButton = document.getElementById('generate-seed');
 
-// const appStatus = document.getElementById('app-status');
-// const textGenerationStatus = document.getElementById('text-generation-status');
-// const loadTextDataButton = document.getElementById('load-text-data');
-// const textDataSelect = document.getElementById('text-data-select');
 let textDataSelect = {
-  value: "drSeuss"
+  // value: "drSeuss"
+  value: "nietzsche"
 };
 
-// const lstmLayersSizesInput = document.getElementById('lstm-layer-sizes');
 let lstmLayersSizesInput = {
   value: '128'
 };
 
-// const examplesPerEpochInput = document.getElementById('examples-per-epoch');
 let examplesPerEpochInput = {
   value: '2048'
 };
-// const batchSizeInput = document.getElementById('batch-size');
 let batchSizeInput = {
   value: '128'
 };
-// const epochsInput = document.getElementById('epochs');
 let epochsInput = {
   value: '5'
 };
-// const validationSplitInput = document.getElementById('validation-split');
 let validationSplitInput = {
   value: '0.0625'
 };
-// const learningRateInput = document.getElementById('learning-rate');
 let learningRateInput = {
   value: '1e-2'
 };
 
-// const generateLengthInput = document.getElementById('generate-length');
 let generateLengthInput = {
   value: '200'
 };
-// const temperatureInput = document.getElementById('temperature');
 let temperatureInput = {
   value: '0.75'
 };
-// const seedTextInput = document.getElementById('seed-text');
 let seedTextInput = {
   value: ''
 };
-// const generatedTextInput = document.getElementById('generated-text');
 let generatedTextInput = {
   value: ''
 };
 
-// const modelAvailableInfo = document.getElementById('model-available');
 
 const sampleLen = 40;
 const sampleStep = 3;
@@ -137,7 +118,6 @@ let textGenerator;
 
 function logStatus(message) {
   console.log(message);
-  // appStatus.textContent = message;
 }
 
 let lossValues;
@@ -231,59 +211,21 @@ export function setUpUI() {
   async function refreshLocalModelStatus() {
     const modelInfo = await textGenerator.checkStoredModelStatus();
     if (modelInfo == null) {
-      // modelAvailableInfo.value =
       console.log(
         `No locally saved model for "${textGenerator.modelIdentifier()}".`
       );
-      // createOrLoadModelButton.textContent = 'Create model';
-      // deleteModelButton.disabled = true;
-      // enableModelParameterControls();
     } else {
-      // modelAvailableInfo.value = 
       console.log(`Saved @ ${modelInfo.dateSaved.toISOString()}`);
-      // createOrLoadModelButton.textContent = 'Load model';
-      // deleteModelButton.disabled = false;
-      // disableModelParameterControls();
     }
     // createOrLoadModelButton.disabled = false;
   }
 
-  function disableModelButtons() {
-    // createOrLoadModelButton.disabled = true;
-    // deleteModelButton.disabled = true;
-    // trainModelButton.disabled = true;
-    // generateTextButton.disabled = true;
-    // generateSeedButton.disabled = true;
-  }
-
-  function enableModelButtons() {
-    // createOrLoadModelButton.disabled = false;
-    // deleteModelButton.disabled = false;
-    // trainModelButton.disabled = false;
-    // generateTextButton.disabled = false;
-    // generateSeedButton.disabled = false;
-  }
-  async function generateNewSeed() {
-    let seedSentence;
-    let seedSentenceIndices;
-    // const len = Number(document.getElementById("seed-length").value);
-    const len = 40;
-    // Seed sentence is not specified yet. Get it from the data.
-    // Todo: make this seed sentence come from speech input instead
-    [seedSentence, seedSentenceIndices] = textData.getRandomSliceWithLength(len);
-    seedTextInput.value = seedSentence;
-
-    seedSentence = seedSentence.slice(
-      seedSentence.length - textData.sampleLen(), seedSentence.length);
-    seedSentenceIndices = textData.textToIndices(seedSentence);
-  }
   /**
    * Use `textGenerator` to generate random text, show the characters on the
    * screen as they are generated one by one.
    */
   async function generateText() {
     try {
-      // disableModelButtons();
 
       if (textGenerator == null) {
         logStatus('ERROR: Please load text data set first.');
@@ -295,14 +237,12 @@ export function setUpUI() {
         logStatus(
           `ERROR: Invalid generation length: ${generateLength}. ` +
           `Generation length must be a positive number.`);
-        // enableModelButtons();
         return;
       }
       if (!(temperature > 0 && temperature <= 1)) {
         logStatus(
           `ERROR: Invalid temperature: ${temperature}. ` +
           `Temperature must be a positive number.`);
-        // enableModelButtons();
         return;
       }
 
@@ -319,7 +259,6 @@ export function setUpUI() {
             `ERROR: Seed text must have a length of at least ` +
             `${textData.sampleLen()}, but has a length of ` +
             `${seedSentence.length}.`);
-          // enableModelButtons();
           return;
         }
         seedSentence = seedSentence.slice(
@@ -332,9 +271,6 @@ export function setUpUI() {
       generatedTextInput.value = sentence;
       const status = 'Done generating text.';
       logStatus(status);
-      // textGenerationStatus.value = status;
-
-      // enableModelButtons();
 
       return sentence;
     } catch (err) {
@@ -342,25 +278,8 @@ export function setUpUI() {
     }
   }
 
-  function disableModelParameterControls() {
-    // lstmLayersSizesInput.disabled = true;
-  }
-
-  function enableModelParameterControls() {
-    // lstmLayersSizesInput.disabled = false;
-  }
-
   function updateModelParameterControls(lstmLayerSizes) {
     lstmLayersSizesInput.value = lstmLayerSizes;
-  }
-
-  function updateTextInputParameters() {
-    // Object.keys(TEXT_DATA_URLS).forEach(key => {
-    //   var opt = document.createElement('option');
-    //   opt.value = key;
-    //   opt.innerHTML = TEXT_DATA_URLS[key].needle;
-    //   textDataSelect.appendChild(opt);
-    // });
   }
 
   function hashCode(str) {
@@ -371,17 +290,6 @@ export function setUpUI() {
     }
     return hash >>> 0;
   }
-
-  /**
-   * Initialize UI state.
-   */
-
-  // disableModelParameterControls();
-
-  /**
-   * Update Text Inputs
-   */
-  // updateTextInputParameters();
 
   /**
    * Wire up UI callbacks.
@@ -418,7 +326,6 @@ export function setUpUI() {
 
     // from createOrLoadModelButton:
     if (textGenerator == null) {
-      // createOrLoadModelButton.disabled = false;
       logStatus('ERROR: Please load text data set first.');
       return;
     }
@@ -492,62 +399,11 @@ export function setUpUI() {
     }
 
     textGenerator.compileModel(learningRate);
-    // disableModelButtons();
     await textGenerator.fitModel(
       numEpochs, examplesPerEpoch, batchSize, validationSplit);
     console.log(await textGenerator.saveModel());
     await refreshLocalModelStatus();
-    // enableModelButtons();
 
     await generateText();
   });
-
-  // loadTextDataButton.addEventListener('click', async () => {
-  //   // textDataSelect.disabled = true;
-  //   // loadTextDataButton.disabled = true;
-  // // put rest of code in getText event listener
-  // });
-
-  // createOrLoadModelButton.addEventListener('click', async () => {
-  //   // createOrLoadModelButton.disabled = true;
-
-  //   // put rest of code in getText event listener
-
-  //   // trainModelButton.disabled = false;
-  //   // generateSeedButton.disabled = false;
-  //   // generateTextButton.disabled = false;
-  // });
-
-  // deleteModelButton.addEventListener('click', async () => {
-  //   if (textGenerator == null) {
-  //     logStatus('ERROR: Please load text data set first.');
-  //     return;
-  //   }
-  //   if (confirm(
-  //       `Are you sure you want to delete the model ` +
-  //       `'${textGenerator.modelIdentifier()}'?`)) {
-  //     console.log(await textGenerator.removeModel());
-  //     await refreshLocalModelStatus();
-  //   }
-  // });
-
-  // trainModelButton.addEventListener('click', async () => {
-  //   // put code in getText Event Listener
-  // });
-
-  // generateTextButton.addEventListener('click', async () => {
-  //   if (textGenerator == null) {
-  //     logStatus('ERROR: Load text data set first.');
-  //     return;
-  //   }
-  //   await generateText();
-  // });
-
-  // generateSeedButton.addEventListener('click', async () => {
-  //   if (textGenerator == null) {
-  //     logStatus('ERROR: Load text data set first.');
-  //     return;
-  //   }
-  //   await generateNewSeed();
-  // });
 }

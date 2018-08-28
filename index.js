@@ -26,6 +26,7 @@
  * Networks" http://karpathy.github.io/2015/05/21/rnn-effectiveness/
  */
 
+import 'babel-polyfill'; // todo--> added b/c I got ReferenceError: regeneratorRuntime is not defined...
 import * as tf from '@tensorflow/tfjs';
 
 import {
@@ -72,7 +73,6 @@ export class LSTMTextGenerator {
    *   number or an non-empty array of numbers.
    */
   createModel(lstmLayerSizes) {
-    // let modelType = document.getElementById('model-type').value;
     let modelType = 'LSTM';
     if (!Array.isArray(lstmLayerSizes)) {
       lstmLayerSizes = [lstmLayerSizes];
@@ -272,9 +272,6 @@ export class SaveableLSTMTextGenerator extends LSTMTextGenerator {
       throw new Error('Cannot save model before creating model.');
     } else {
       return await this.model.save(this.modelSavePath_);
-      // let save_path = 'lstm_precreated_model';
-      // console.log('saving to: ' + save_path);
-      // return await this.model.save(save_path);
     }
   }
 

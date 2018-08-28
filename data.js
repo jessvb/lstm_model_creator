@@ -178,6 +178,7 @@ export class TextData {
         this.charSet_.push(this.textString_[i]);
       }
     }
+    console.log(this.charSet_);
     this.charSetSize_ = this.charSet_.length;
   }
 

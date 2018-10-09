@@ -99,11 +99,12 @@ export class TextData {
    */
   nextDataEpoch(numExamples) {
     const xsBuffer = new tf.TensorBuffer([
-        numExamples, this.sampleLen_, this.charSetSize_]);
-    const ysBuffer  = new tf.TensorBuffer([numExamples, this.charSetSize_]);
+      numExamples, this.sampleLen_, this.charSetSize_
+    ]);
+    const ysBuffer = new tf.TensorBuffer([numExamples, this.charSetSize_]);
     for (let i = 0; i < numExamples; ++i) {
       const beginIndex = this.exampleBeginIndices_[
-          this.examplePosition_ % this.exampleBeginIndices_.length];
+        this.examplePosition_ % this.exampleBeginIndices_.length];
       for (let j = 0; j < this.sampleLen_; ++j) {
         xsBuffer.set(1, i, j, this.indices_[beginIndex + j]);
       }
@@ -145,15 +146,15 @@ export class TextData {
    */
   getRandomSlice() {
     const startIndex =
-        Math.round(Math.random() * (this.textLen_ - this.sampleLen_ - 1));
+      Math.round(Math.random() * (this.textLen_ - this.sampleLen_ - 1));
     const textSlice = this.slice_(startIndex, startIndex + this.sampleLen_);
     return [textSlice, this.textToIndices(textSlice)];
   }
-  
+
   getRandomSliceWithLength(len) {
     const startIndex =
-        Math.round(Math.random() * (this.textLen_ - len - 1));
-        const textSlice = this.slice_(startIndex, startIndex + len);
+      Math.round(Math.random() * (this.textLen_ - len - 1));
+    const textSlice = this.slice_(startIndex, startIndex + len);
     return [textSlice, this.textToIndices(textSlice)];
   }
   /**
@@ -195,14 +196,48 @@ export class TextData {
   generateExampleBeginIndices_() {
     // Prepare beginning indices of examples.
     this.exampleBeginIndices_ = [];
-    for (let i = 0;
-        i < this.textLen_ - this.sampleLen_ - 1;
-        i += this.sampleStep_) {
+    for (let i = 0; i < this.textLen_ - this.sampleLen_ - 1; i += this.sampleStep_) {
       this.exampleBeginIndices_.push(i);
     }
 
     // Randomly shuffle the beginning indices.
     tf.util.shuffle(this.exampleBeginIndices_);
     this.examplePosition_ = 0;
+  }
+
+  /** For downloading the charSet */
+  download_(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }
+
+  /**
+   * Download the charSet to be used when you load a model.
+   */
+  downloadCharSet(inputTextName) {
+    let charSetStr = 'charSet = [';
+    for (let i = 0; i < this.charSet_.length; i++) {
+      charSetStr += "'";
+      // add character from charSet, if it isn't the return character
+      if (this.charSet_[i] == "'") {
+        charSetStr += '\\' + this.charSet_[i];
+      } else if (this.charSet_[i] != '\n' && this.charSet_[i] != '\r') {
+        charSetStr += this.charSet_[i];
+      }
+      if (i != this.charSet_.length - 1) {
+        charSetStr += "',";
+      } else {
+        charSetStr += "'];";
+      }
+    }
+    this.download_(inputTextName + '.txt', charSetStr);
   }
 }

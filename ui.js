@@ -16,7 +16,6 @@
  */
 
 import * as tf from '@tensorflow/tfjs';
-import embed from 'vega-embed';
 
 import {
   TextData
@@ -70,7 +69,7 @@ let testText = {
 
 let textDataSelect = {
   // value: "drSeuss"
-  value: "nietzsche"
+  value: "drSeuss"
 };
 
 let lstmLayersSizesInput = {
@@ -198,7 +197,7 @@ export async function onTextGenerationChar(char) {
   const status = `Generating text: ${charCount}/${generateLength} complete...`;
   logStatus(status);
   // textGenerationStatus.textContent = status;
-  if (charCount/generateLength == 1){
+  if (charCount / generateLength == 1) {
     console.log(generatedTextInput.value);
   }
   await tf.nextFrame();
@@ -319,8 +318,12 @@ export function setUpUI() {
     } else {
       dataIdentifier = hashCode(testText.value);
     }
+    // define the charSet indices etc.
     textData =
       new TextData(dataIdentifier, testText.value, sampleLen, sampleStep);
+    // download the charSet so that you can upload it later
+    textData.downloadCharSet(dataIdentifier);
+    // create the LSTM text generator
     textGenerator = new SaveableLSTMTextGenerator(textData);
     await refreshLocalModelStatus();
 
